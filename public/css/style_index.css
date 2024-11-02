@@ -1,0 +1,248 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+* {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-padding-top: 4rem;
+    scroll-behavior: smooth;
+    list-style: none;
+    text-decoration: none;
+}
+/*slideshow*/
+* {box-sizing: border-box;}
+.mySlides {display: none;}
+img {vertical-align: middle;}
+/* Slideshow container */
+.slideshow-container {
+    position: relative;
+    margin: auto;
+  }
+/* The dots/bullets/indicators */
+.dot {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+p {
+    font-size: 16px; /* Kích thước chữ */
+    line-height: 1.6; /* Khoảng cách giữa các dòng */
+    color: #696969; /* Màu chữ */
+    text-align: justify; /* Canh đều văn bản */
+    margin: 15px 0; /* Khoảng cách trên và dưới */
+    font-family: Arial, sans-serif; /* Đổi font chữ nếu cần */
+}
+h2 {
+    display: block;
+    font-size: 1.5em;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+    color: black;
+    font-family: Arial, sans-serif; 
+}
+
+
+
+/* Fading animation */
+.fade {
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@keyframes fade {
+  from {opacity: .4} 
+  to {opacity: 1}
+}
+
+/* On smaller screens, decrease text size */
+@media only screen and (max-width: 300px) {
+  .text {font-size: 11px}
+}
+
+/* Ẩn bảng */
+.hidden-table tbody tr {
+    display: none;
+}
+  
+  /* Hiển thị dòng */
+  .hidden-table tbody tr:hover {
+    display: table-row;
+}
+  
+  /* Thiết lập giao diện cho bảng */
+.hidden-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+  
+.hidden-table th,
+.hidden-table td {
+    padding: 8px;
+    text-align: left;
+}
+  
+.hidden-table th:first-child,
+.hidden-table td:first-child {
+    padding-left: 0;
+}
+table{
+    font-size: large;
+}
+.image2{
+    max-width: 1000%;
+    height: auto;
+}
+
+.input1{
+    width: 200px;
+    height: 30px;
+    border-radius: 10px;
+}
+
+/* Ẩn bảng */
+.hidden-table3 tbody tr {
+    display: none;
+}
+  
+  /* Hiển thị dòng */
+  .hidden-table3 tbody tr:hover {
+    display: table-row;
+}
+  
+  /* Thiết lập giao diện cho bảng */
+.hidden-table3 {
+    border-collapse: collapse;
+    width: 100%;
+    z-index: 1000000;
+}
+  
+.hidden-table3 th,
+.hidden-table3 td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #333;
+}
+  
+.hidden-table3 th:first-child,
+.hidden-table3 td:first-child {
+    padding-left: 0;
+}
+.image3{
+    max-width: 100px;
+    height: auto;
+}
+
+
+.image4{
+    max-width: 20px;
+    height: auto;
+}
+.image5{
+    width: 450px;
+    height: auto;
+}
+.image6{
+    max-width: 100px;
+    height: auto;
+}
+.canchinh{
+    display: flex;
+}
+.canchinh a{
+    color: #333;
+	text-decoration: none;
+}
+#backtop{
+    width: 50px;
+    height: 50px;
+
+    color: #ff99c1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 40px;
+    right: 20px;
+    cursor: pointer;
+}
+
+
+@media only screen and (max-width: 46.1875em){
+    .slideshow-container{
+        width: 75%;
+    }
+    .image2{
+        max-width: 350px;
+        height: 350px;
+    }
+    .hidden-table{
+        font-size: medium;
+        width: 50%;
+    }
+    .csw-btn-button{
+    width: 100px;
+    height: 50px;
+    font-size: small;
+    }
+    .image5{
+        max-width: 350px;
+        height: 350px;
+    }
+    .csw-btn-button3{
+        width: 50px;
+        height: 50px;
+        font-size: small;
+    }
+}
+
+@media only screen and (min-width: 46.25em) and (max-width: 63.9375){
+  .slideshow-container{
+    width: 75%;
+  }
+  .image2{
+    max-width: 350px;
+    height: 350px;
+    }
+    .hidden-table{
+        font-size: medium;
+        width: 70%;
+    }
+    .image5{
+        max-width: 350px;
+        height: 350px;
+    }
+    .csw-btn-button3{
+        width: 50px;
+        height: 50px;
+        font-size: medium;
+    }
+}
+.loading{
+    width: 100%;
+    height: 100%;
+    background: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100000000;
+    display: block;
+    overflow: hidden;
+    opacity: 0.95;
+}
+.loading img{
+    width: 250px;
+    height: 150px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -75px;
+    margin-left: -75px;
+}

@@ -1,0 +1,69 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+
+.product-confirm {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 15px;
+    background-color: #FAD4D4; /* Màu nền hồng nhạt */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-image {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.product-image img {
+    border-radius: 50%; /* Làm tròn hình ảnh */
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.product-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.product-item strong {
+    font-weight: bold;
+    color: #333;
+}
+
+.product-item span {
+    color: #555;
+}
+
+.product-confirm button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff; /* Màu xanh của nút */
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.product-confirm button:hover {
+    background-color: #0056b3;
+}
+
+.product-confirm .btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.product-confirm .btn-danger:hover {
+    background-color: #c82333;
+}
