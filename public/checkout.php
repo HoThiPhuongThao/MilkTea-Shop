@@ -3,8 +3,8 @@ session_start();
 require('../db/conn.php'); // Kết nối đến cơ sở dữ liệu
 
 // Kiểm tra xem user_id có tồn tại không
-if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
+if (isset($_SESSION['user']) && !empty($_SESSION['user'])) {
+    $user_id = $_SESSION['user']['id'];
 } else {
     echo "User ID không tồn tại trong session. Vui lòng đăng nhập lại.";
     exit();
