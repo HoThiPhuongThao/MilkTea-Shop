@@ -1,36 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Damin Tea Website - Trà sữa</title>
+    <link rel="stylesheet" href="css/style_header.css">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+</head>
+<body>
+<!-- Navbar-->
+<header>
+    <?php
+    $search = isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '';
+    ?>
+    <a href="index.php" class="logo">
+        <i class='bx bxs-leaf'></i>
+    </a>
+    <ul class="navbar">
+        <li><a href="index.php">Trang chủ</a></li>
+        <li class="dropdown">
+            <a href="product.php">Sản phẩm</a>
+            <ul class="dropdown-content">
+                <li><a href="milk_tea.php">Trà sữa</a></li>
+                <li><a href="tea.php">Trà</a></li>
+                <li><a href="cake.php">Bánh ngọt</a></li>
+            </ul>
+        </li>
+        <li><a href="about_us.php">Về chúng tôi</a></li>
+    </ul>
+    <div class="search-bar">
+        <input type="text" placeholder="Tìm kiếm món..." class="search-input" id="searchInput" value="<?php echo htmlspecialchars($search); ?>" />
+    </div>
+    <div class="header-icon">
+        <i class='bx bx-search' id="search-icon" onclick="searchProduct()"></i>
+        <a href="cart.php" title="Giỏ hàng">
+            <i class='bx bx-cart-alt'></i>
+        </a>
+        <?php
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            if (isset($_SESSION['user'])) {
+                echo '<a href="profile.php" title="Thông tin tài khoản" style="font-size: 14px; color: #ff2190; text-decoration: none;">' . htmlspecialchars($_SESSION['user']['fullname']) . '</a>';
+                echo '<a href="logout.php" title="Đăng xuất"><i class="bx bx-log-out"></i></a>';
+            } else {
+                echo '<a href="login.php" title="Tài khoản"><i class="bx bx-user-circle"></i></a>';
+            }
+        ?>
+    </div>
+</header>
+
+<script>
+    function searchProduct() {
+        const searchInput = document.getElementById('searchInput').value;
+        if (searchInput) {
+            window.location.href = 'milk_tea.php?search=' + encodeURIComponent(searchInput);
+        }
+    }
+</script>
+
 <?php
-require('header.php');
-require('../db/conn.php');  // Kết nối đến cơ sở dữ liệu
+require('../db/conn.php');
 
-// Số sản phẩm trên mỗi trang
 $productsPerPage = 6;
-
-// Xác định trang hiện tại (nếu có), nếu không mặc định là trang 1
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $start = ($page - 1) * $productsPerPage;
 
-// Lấy tổng số sản phẩm trong danh mục
-$totalProductsSql = "SELECT COUNT(*) as total FROM product WHERE category_id = 114";
-$totalResult = $conn->query($totalProductsSql);
+// Kiểm tra từ khóa tìm kiếm
+if (isset($_GET['search']) && !empty($_GET['search'])) {
+    $searchQuery = $conn->real_escape_string($_GET['search']);
+    $sql = "SELECT * FROM product WHERE category_id = 114 AND title LIKE '%$searchQuery%' LIMIT $start, $productsPerPage";
+    $countSql = "SELECT COUNT(*) as total FROM product WHERE category_id = 114 AND title LIKE '%$searchQuery%'";
+} else {
+    $sql = "SELECT * FROM product WHERE category_id = 114 LIMIT $start, $productsPerPage";
+    $countSql = "SELECT COUNT(*) as total FROM product WHERE category_id = 114";
+}
+
+$totalResult = $conn->query($countSql);
 $totalRow = $totalResult->fetch_assoc();
 $totalProducts = $totalRow['total'];
-
-// Tính tổng số trang
 $totalPages = ceil($totalProducts / $productsPerPage);
-
-// Truy vấn lấy các sản phẩm cho trang hiện tại
-$sql = "SELECT * FROM product WHERE category_id = 114 LIMIT $start, $productsPerPage";
 $result = $conn->query($sql);
 ?>
 
-<link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
 <style>
     body {
         font-family: Arial, sans-serif;
     }
     .product-container {
         padding: 40px;
-        background-color: #ffe4e3; /* Nền chung cho cả danh sách sản phẩm và phân trang */
+        background-color: #ffe4e3;
     }
     .product-list {
         display: flex;
@@ -109,7 +168,6 @@ $result = $conn->query($sql);
         background-color: #ff2190;
         color: white;
         border: 1px solid #ff2190;
-        border-radius: 100%;
     }
     .pagination a:hover:not(.active) {
         background-color: #ffe4e3;
@@ -133,25 +191,24 @@ $result = $conn->query($sql);
                 echo '</div>';
             }
         } else {
-            echo "Không có sản phẩm nào.";
+            echo "<h2>Không tìm thấy sản phẩm nào.</h2>";
         }
         ?>
     </div>
 
-    <!-- Phân trang -->
     <div class="pagination">
         <?php
         if ($page > 1) {
-            echo '<a href="?page=' . ($page - 1) . '">&laquo; </a>';
+            echo '<a href="?page=' . ($page - 1) . '&search=' . urlencode($search) . '">&laquo;</a>';
         }
 
         for ($i = 1; $i <= $totalPages; $i++) {
             $active = ($i == $page) ? 'active' : '';
-            echo '<a href="?page=' . $i . '" class="' . $active . '">' . $i . '</a>';
+            echo '<a href="?page=' . $i . '&search=' . urlencode($search) . '" class="' . $active . '">' . $i . '</a>';
         }
 
         if ($page < $totalPages) {
-            echo '<a href="?page=' . ($page + 1) . '"> &raquo;</a>';
+            echo '<a href="?page=' . ($page + 1) . '&search=' . urlencode($search) . '">&raquo;</a>';
         }
         ?>
     </div>
@@ -159,5 +216,7 @@ $result = $conn->query($sql);
 
 <?php
 require('footer1.php');
-$conn->close();  // Đóng kết nối
+$conn->close();
 ?>
+</body>
+</html>
