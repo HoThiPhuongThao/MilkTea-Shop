@@ -79,9 +79,9 @@ if (isset($_GET['id'])) {
             <button type="submit" class="btn btn-danger">Quay lại</button>
         </form>
         <section class="panel">
-            <header class="panel-heading">
+            <h1 style="text-align: center;">
                 Chỉnh sửa sản phẩm
-            </header>
+            </h1>
             <div class="panel-body">
                 <div class="position-center">
                     <form role="form" action="" method="post" enctype="multipart/form-data"> <!-- Thêm enctype cho upload file -->
