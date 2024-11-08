@@ -25,14 +25,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $role_id = $_POST['role_id'];
 
-    // Câu lệnh SQL để cập nhật dữ liệu người dùng
-    $sql = "UPDATE user SET taikhoan='$tk', password='$mk', fullname='$ten', phone_number='$phone', address='$address', email='$email', role_id='$role_id' WHERE id='$id'";
+    // Kiểm tra xem tài khoản đã tồn tại chưa (ngoại trừ tài khoản hiện tại)
+    $sql_check = "SELECT * FROM user WHERE taikhoan='$tk' AND id != '$id'";
+    $result_check = mysqli_query($conn, $sql_check);
 
-    // Thực thi câu lệnh SQL và kiểm tra nếu thành công
-    if ($conn->query($sql) === TRUE) {
-        echo "<div class='alert alert-success'>Cập nhật khách hàng thành công!</div>";
+    if (mysqli_num_rows($result_check) > 0) {
+        // Tài khoản đã tồn tại
+        echo "<div class='alert alert-danger'>Tài khoản đã tồn tại! Vui lòng chọn tên tài khoản khác.</div>";
     } else {
-        echo "<div class='alert alert-danger'>Lỗi: " . $sql . "<br>" . $conn->error . "</div>";
+        // Câu lệnh SQL để cập nhật dữ liệu người dùng
+        $sql = "UPDATE user SET taikhoan='$tk', password='$mk', fullname='$ten', phone_number='$phone', address='$address', email='$email', role_id='$role_id' WHERE id='$id'";
+
+        // Thực thi câu lệnh SQL và kiểm tra nếu thành công
+        if ($conn->query($sql) === TRUE) {
+            echo "<div class='alert alert-success'>Cập nhật khách hàng thành công!</div>";
+        } else {
+            echo "<div class='alert alert-danger'>Lỗi: " . $sql . "<br>" . $conn->error . "</div>";
+        }
     }
 }
 ?>

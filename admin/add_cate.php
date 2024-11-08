@@ -10,14 +10,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Kiểm tra xem tên danh mục có rỗng không
     if (!empty($tendanhmuc)) {
-        // Câu lệnh SQL để thêm dữ liệu vào bảng
-        $sql = "INSERT INTO category (id, name) VALUES ('$id', '$tendanhmuc')";
+        // Kiểm tra xem tên danh mục đã tồn tại trong database chưa
+        $sql_check = "SELECT * FROM category WHERE name='$tendanhmuc'";
+        $result_check = mysqli_query($conn, $sql_check);
 
-        // Thực thi câu lệnh SQL và kiểm tra nếu thành công
-        if ($conn->query($sql) === TRUE) {
-            echo "<div class='alert alert-success'>Thêm mới danh mục thành công!</div>";
+        if (mysqli_num_rows($result_check) > 0) {
+            // Nếu tồn tại danh mục trùng
+            echo "<div class='alert alert-danger'>Tên danh mục đã tồn tại! Vui lòng chọn tên khác.</div>";
         } else {
-            echo "<div class='alert alert-danger'>Lỗi: " . $sql . "<br>" . $conn->error . "</div>";
+            // Câu lệnh SQL để thêm dữ liệu vào bảng
+            $sql = "INSERT INTO category (id, name) VALUES ('$id', '$tendanhmuc')";
+
+            // Thực thi câu lệnh SQL và kiểm tra nếu thành công
+            if ($conn->query($sql) === TRUE) {
+                echo "<div class='alert alert-success'>Thêm mới danh mục thành công!</div>";
+            } else {
+                echo "<div class='alert alert-danger'>Lỗi: " . $sql . "<br>" . $conn->error . "</div>";
+            }
         }
     } else {
         echo "<div class='alert alert-warning'>Vui lòng nhập tên danh mục!</div>";
@@ -31,9 +40,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <button type="submit" class="btn btn-danger">Quay lại</button>
         </form>
         <section class="panel">
-            <h1 style="text-align: center;">
+            <header class="panel-heading">
                 Thêm mới danh mục
-            </h1>
+            </header>
             <div class="panel-body">
                 <div class="position-center">
                     <form role="form" action="" method="post">

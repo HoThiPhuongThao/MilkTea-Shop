@@ -14,33 +14,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $gia = (float)$_POST['price']; // Chuyển đổi thành số thực
     $mota = $_POST['description'];
 
-    // Xử lý tải lên hình ảnh
-    // Xử lý tải lên hình ảnh
-if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] == 0) {
-    $upload_dir = 'images/'; // Đường dẫn đến thư mục lưu trữ
-    $file_name = basename($_FILES['thumbnail']['name']); // Lấy tên tệp hình ảnh
-    $anh = $file_name; // Chỉ lưu tên tệp, không cần đường dẫn
-
-    // Di chuyển tệp tải lên vào thư mục mong muốn
-    if (move_uploaded_file($_FILES['thumbnail']['tmp_name'], $upload_dir . $file_name)) {
-        $ngay = date('Y-m-d H:i:s'); // Thiết lập ngày giờ hiện tại
-
-        // Câu lệnh SQL để thêm dữ liệu vào bảng
-        $sql = "INSERT INTO product (thumbnail, title, category_id, soluong, price, created_at, description) VALUES ('$anh', '$ten', '$cate_id', $soluong, $gia, '$ngay','$mota')";
-
-        // Thực thi câu lệnh SQL và kiểm tra nếu thành công
-        if ($conn->query($sql) === TRUE) {
-            echo "<div class='alert alert-success'>Thêm mới sản phẩm thành công!</div>";
-        } else {
-            echo "<div class='alert alert-danger'>Lỗi: " . $sql . "<br>" . $conn->error . "</div>";
-        }
+    // Kiểm tra xem sản phẩm đã tồn tại hay chưa
+    $check_product = "SELECT * FROM product WHERE title = '$ten'";
+    $check_result = mysqli_query($conn, $check_product);
+    if (mysqli_num_rows($check_result) > 0) {
+        // Sản phẩm đã tồn tại
+        echo "<div class='alert alert-danger'>Sản phẩm '$ten' đã tồn tại trong bảng sản phẩm!</div>";
     } else {
-        echo "<div class='alert alert-danger'>Lỗi tải lên hình ảnh!</div>";
-    }
-} else {
-    echo "<div class='alert alert-danger'>Không có tệp hình ảnh được tải lên!</div>";
-}
+        // Xử lý tải lên hình ảnh
+        if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] == 0) {
+            $upload_dir = 'images/'; // Đường dẫn đến thư mục lưu trữ
+            $file_name = basename($_FILES['thumbnail']['name']); // Lấy tên tệp hình ảnh
+            $anh = $file_name; // Chỉ lưu tên tệp, không cần đường dẫn
 
+            // Di chuyển tệp tải lên vào thư mục mong muốn
+            if (move_uploaded_file($_FILES['thumbnail']['tmp_name'], $upload_dir . $file_name)) {
+                $ngay = date('Y-m-d H:i:s'); // Thiết lập ngày giờ hiện tại
+
+                // Câu lệnh SQL để thêm dữ liệu vào bảng
+                $sql = "INSERT INTO product (thumbnail, title, category_id, soluong, price, created_at, description) VALUES ('$anh', '$ten', '$cate_id', $soluong, $gia, '$ngay','$mota')";
+
+                // Thực thi câu lệnh SQL và kiểm tra nếu thành công
+                if ($conn->query($sql) === TRUE) {
+                    echo "<div class='alert alert-success'>Thêm mới sản phẩm thành công!</div>";
+                } else {
+                    echo "<div class='alert alert-danger'>Lỗi: " . $sql . "<br>" . $conn->error . "</div>";
+                }
+            } else {
+                echo "<div class='alert alert-danger'>Lỗi tải lên hình ảnh!</div>";
+            }
+        } else {
+            echo "<div class='alert alert-danger'>Không có tệp hình ảnh được tải lên!</div>";
+        }
+    }
 }
 ?>
 
@@ -50,9 +56,9 @@ if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] == 0) {
             <button type="submit" class="btn btn-danger">Quay lại</button>
         </form>
         <section class="panel">
-            <h1 style="text-align: center;">
+            <header class="panel-heading">
                 Thêm mới sản phẩm
-            </h1>
+            </header>
             <div class="panel-body">
                 <div class="position-center">
                     <form role="form" action="" method="post" enctype="multipart/form-data"> <!-- Thêm enctype cho upload file -->

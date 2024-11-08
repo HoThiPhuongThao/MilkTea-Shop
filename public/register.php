@@ -1,3 +1,48 @@
+<?php 
+        session_start();
+        require('../db/conn.php'); 
+
+        // Xác định quyền mặc định
+        $sql1 = "SELECT id, name FROM role WHERE name = 'customer' LIMIT 1";
+        $result1 = mysqli_query($conn, $sql1);
+        $customerRole = mysqli_fetch_assoc($result1);
+
+        // Xử lý form đăng ký 
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $tk = $_POST['taikhoan'];
+            $mk = $_POST['password'];
+            $ten = $_POST['fullname']; 
+            $phone = $_POST['phone_number']; 
+            $address = $_POST['address'];
+            $email = $_POST['email'];
+            $role_id = $customerRole['id']; // Gán trực tiếp role_id là 'customer'
+            $ngay = date('Y-m-d H:i:s');
+            // Kiểm tra xem tài khoản có hya chưa
+            $check_Sql = "SELECT * FROM user WHERE  taikhoan = '$tk'";
+            $check_Result = mysqli_query($conn, $check_Sql);
+                 if (mysqli_num_rows($check_Result) > 0) {
+                    echo "<div class='alert-danger'>Tài khoản đã tồn tại.Vui lòng tạo tài khoản khác.</div>";}
+                    else {  
+            // Chèn dữ liệu người dùng vào bảng user
+                            $sql = "INSERT INTO user (taikhoan, password, fullname, phone_number, address, email, role_id, created_at) 
+                                    VALUES ('$tk', '$mk', '$ten', '$phone', '$address', '$email', '$role_id', '$ngay')";
+
+                            if ($conn->query($sql) === TRUE) {
+                                // Lấy user_id của người dùng vừa đăng ký
+                                $user_id = $conn->insert_id;
+                                // Lưu user_id vào session
+                                $_SESSION['user_id'] = $user_id;
+
+                                // Chuyển hướng về trang đăng nhập
+                                header("Location: login.php");
+                                exit();
+                            } else {
+                                echo "<div class='alert alert-danger'>Lỗi: " . $sql . "<br>" . $conn->error . "</div>";
+            }
+        }
+    }
+        ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,13 +53,34 @@
         body {
             display: flex;
             justify-content: center;
-            align-items: center;
             height: 100vh;
             margin: 0;
             background-color: #f2f2f2;
             font-family: Arial, sans-serif;
             padding: 20px;
+            margin-top: 60px;
         }
+        .alert-danger {
+            position: absolute;
+            top: 10px; /* Điều chỉnh khoảng cách từ trên xuống */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%; /* Điều chỉnh chiều rộng để trùm lên form đăng ký */
+            padding: 15px;
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            z-index: 10; /* Đảm bảo khung thông báo nằm trên khung đăng ký */
+            text-align: center;
+          
+        }
+        /* CSS cho khung đăng ký */
+        .registration-container {
+            position: relative;
+        }
+
+
         .register-form {
             background: #fef4f1;
             padding: 20px;
@@ -59,49 +125,15 @@
             color: #ff6b6b;
             text-decoration: none;
         }
+
     </style>
 </head>
 <body>
     <div class="register-form">
         <h2>REGISTER NOW</h2>
-        <?php 
-        session_start();
-        require('../db/conn.php'); 
-
-        // Xác định quyền mặc định
-        $sql1 = "SELECT id, name FROM role WHERE name = 'customer' LIMIT 1";
-        $result1 = mysqli_query($conn, $sql1);
-        $customerRole = mysqli_fetch_assoc($result1);
-
-        // Xử lý form đăng ký
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $tk = $_POST['taikhoan'];
-            $mk = $_POST['password'];
-            $ten = $_POST['fullname']; 
-            $phone = $_POST['phone_number']; 
-            $address = $_POST['address'];
-            $email = $_POST['email'];
-            $role_id = $customerRole['id']; // Gán trực tiếp role_id là 'customer'
-            $ngay = date('Y-m-d H:i:s');
-
-            // Chèn dữ liệu người dùng vào bảng user
-            $sql = "INSERT INTO user (taikhoan, password, fullname, phone_number, address, email, role_id, created_at) 
-                    VALUES ('$tk', '$mk', '$ten', '$phone', '$address', '$email', '$role_id', '$ngay')";
-
-            if ($conn->query($sql) === TRUE) {
-                // Lấy user_id của người dùng vừa đăng ký
-                $user_id = $conn->insert_id;
-                // Lưu user_id vào session
-                $_SESSION['user_id'] = $user_id;
-
-                // Chuyển hướng về trang đăng nhập
-                header("Location: login.php");
-                exit();
-            } else {
-                echo "<div class='alert alert-danger'>Lỗi: " . $sql . "<br>" . $conn->error . "</div>";
-            }
-        }
-        ?>
+        <?php if (!empty($errorMessage)): ?>
+            <div class="error-message"><?php echo $errorMessage; ?></div>
+            <?php endif; ?>
         <form action="" method="post">
             <div class="form-group">
                 <label for="exampleInputEmail1">Tài khoản</label>

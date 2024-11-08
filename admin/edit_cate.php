@@ -24,13 +24,22 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tendanhmuc = $_POST['tendanhmuc'];
 
-    // Cập nhật thông tin danh mục
-    $update_sql = "UPDATE category SET name = '$tendanhmuc' WHERE id = $id";
-    if (mysqli_query($conn, $update_sql)) {
-        header("Location: category.php?update_success=1");
-        exit;
+    // Kiểm tra xem tên danh mục đã tồn tại chưa
+    $check_sql = "SELECT * FROM category WHERE name = '$tendanhmuc' AND id != $id";
+    $check_result = mysqli_query($conn, $check_sql);
+
+    if (mysqli_num_rows($check_result) > 0) {
+        // Nếu tên danh mục đã tồn tại
+        echo "<div class='alert alert-danger'>Tên danh mục đã tồn tại! Hãy nhập tên khác.</div>";
     } else {
-        echo "Lỗi khi cập nhật: " . mysqli_error($conn);
+        // Cập nhật thông tin danh mục
+        $update_sql = "UPDATE category SET name = '$tendanhmuc' WHERE id = $id";
+        if (mysqli_query($conn, $update_sql)) {
+            header("Location: category.php?update_success=1");
+            exit;
+        } else {
+            echo "Lỗi khi cập nhật: " . mysqli_error($conn);
+        }
     }
 }
 ?>

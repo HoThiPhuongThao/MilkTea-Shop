@@ -17,18 +17,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $role_id = $_POST['role_id'];
     $ngay = date('Y-m-d H:i:s'); // Thiết lập ngày giờ hiện tại
+    $check_Sql = "SELECT * FROM user WHERE  taikhoan = '$tk'";
+    $check_Result = mysqli_query($conn, $check_Sql);
+         if (mysqli_num_rows($check_Result) > 0) {
+            echo "<div class='alert-danger'>Tài khoản đã tồn tại.Vui lòng tạo tài khoản khác.</div>";}
+            else {  
+                // Câu lệnh SQL để thêm dữ liệu vào bảng
+                $sql = "INSERT INTO user (id, taikhoan, password, fullname, phone_number, address, email, role_id, created_at) 
+                        VALUES ('$id', '$tk', '$mk', '$ten', '$phone', '$address', '$email', '$role_id', '$ngay')";
 
-    // Câu lệnh SQL để thêm dữ liệu vào bảng
-    $sql = "INSERT INTO user (id, taikhoan, password, fullname, phone_number, address, email, role_id, created_at) 
-            VALUES ('$id', '$tk', '$mk', '$ten', '$phone', '$address', '$email', '$role_id', '$ngay')";
-
-    // Thực thi câu lệnh SQL và kiểm tra nếu thành công
-    if ($conn->query($sql) === TRUE) {
-        echo "<div class='alert alert-success'>Thêm mới khách hàng thành công!</div>";
-    } else {
-        echo "<div class='alert alert-danger'>Lỗi: " . $sql . "<br>" . $conn->error . "</div>";
-    }
-}
+                // Thực thi câu lệnh SQL và kiểm tra nếu thành công
+                if ($conn->query($sql) === TRUE) {
+                    echo "<div class='alert alert-success'>Thêm mới khách hàng thành công!</div>";
+                } else {
+                    echo "<div class='alert alert-danger'>Lỗi: " . $sql . "<br>" . $conn->error . "</div>";
+                }
+            }
+        }
 ?>
 
 <div class="row">
